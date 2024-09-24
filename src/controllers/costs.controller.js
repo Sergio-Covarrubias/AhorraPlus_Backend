@@ -97,4 +97,4 @@ export const getRangeCosts = async (req, res) => {
     } catch (error) {
         return res.status(204).json({ mesagge: 'rangeCosts not found' });
     }
-}
+};

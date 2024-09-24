@@ -21,7 +21,6 @@ export const register = async (req, res) => {
         const userSaved = await newUser.save();
         const token = await createAccessToken({ iD: userSaved._id });
 
-        res.cookie('token', token);
         res.json({
             id: userSaved._id,
             username: userSaved.username,
@@ -33,7 +32,7 @@ export const register = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-}
+};
 
 export const login = async (req, res) => {
     const { email, password } = req.body;
@@ -46,8 +45,6 @@ export const login = async (req, res) => {
         if (!isMatch) return res.status(500).json({ message: 'Incorrect password' });
         
         const token = await createAccessToken({ iD: userFound._id });
-
-        res.cookie('token', token);
         res.json({
             id: userFound._id,
             username: userFound.username,
@@ -59,17 +56,16 @@ export const login = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-}
+};
 
 export const logout = (req, res) => {
     res.cookie('token', '', {
         expires: new Date(0)
     });
     return res.sendStatus(200);
-}
+};
 
 export const profile = async (req, res) => {
-    console.log(req.user);
     const userFound = await User.findById(req.user.iD);
     if (!userFound) return res.status(400).json({ message: 'User not found' });
 
@@ -80,12 +76,10 @@ export const profile = async (req, res) => {
         createdAt: userFound.createdAt,
         updatedAt: userFound.updatedAt,
     });
-}
+};
 
 export const verifyToken = async(req, res) => {
-    //const { token } = req.cookies;
     const token = req.query.token;
-
     if (!token) return res.status(401).json({ message: 'Unauthorized' });
 
     jwt.verify(token, process.env.TOKEN_SECRET, async (err, user) => {
@@ -100,4 +94,10 @@ export const verifyToken = async(req, res) => {
             email: userFound.email,
         });
     });
-}
+};
+
+export const reloadBackend = async(req, res) => {
+    console.log('Render server reloaded');
+    res.status(200);
+    res.send();
+};
