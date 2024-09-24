@@ -98,6 +98,10 @@ export const verifyToken = async(req, res) => {
 
 export const reloadBackend = async(req, res) => {
     console.log('Render server reloaded');
+    setTimeout(async () => {
+        const res = await fetch(process.env.FRONT_END_URL);
+        console.log('Render frontend reloaded');
+    }, []);
     res.status(200);
     res.send();
 };
